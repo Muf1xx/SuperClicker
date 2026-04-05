@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style>
+        body { background:#000; color:#0ff; text-align:center; font-family:sans-serif; margin:0; padding:20px; }
+        .cr { width:130px; height:130px; background:#0ff; border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; font-size:50px; color:#000; box-shadow:0 0 20px #0ff; cursor:pointer; }
+        #adp { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#111; z-index:100; padding-top:40px; }
+        .btn { width:100%; padding:15px; background:#f0f; color:#fff; border:none; border-radius:10px; font-weight:bold; margin-bottom:10px; }
+    </style>
+</head>
+<body>
+
+<div id="adp">
+    <h2 style="color:red">ADMIN PANEL</h2>
+    <button id="adm_m" class="btn" style="background:#333;">+1,000,000 МОНЕТ</button>
+    <button id="adm_p" class="btn" style="background:#333;">+10 К СИЛЕ</button>
+    <button id="adm_u" class="btn" style="background:green;">РАЗБАН</button>
+    <p id="adm_close">[ ЗАКРЫТЬ ]</p>
+</div>
+
+<div id="ban" style="display:none; color:red; margin-top:100px;">
+    <h1>BANNED 1.1</h1>
+    <p>ПРИЧИНА: ИЗМЕНЕНИЕ КОДА</p>
+</div>
+
+<div id="ui">
+    <div id="ask_btn" style="text-align:right; opacity:0.3; font-size:25px;">🔑</div>
+    <h1 id="m_val">0</h1>
+    <p>МОНЕТЫ</p>
+    <div id="target" class="cr">💎</div>
+    <div style="margin-top:30px; border:1px solid #333; padding:15px; border-radius:10px;">
+        <button id="ub_btn" class="btn">УЛУЧШИТЬ (50)</button>
+        <p>СИЛА КЛИКА: <span id="pv_val">1</span></p>
+    </div>
+</div>
+
+<script>
+// Данные
+var n = parseInt(localStorage.getItem('n')) || 0;
+var p = parseInt(localStorage.getItem('p')) || 1;
+var b = localStorage.getItem('b') === 'true';
+var isAdm = false;
+
+// Главная функция обновления
+function render() {
+    if (b && !isAdm) {
+        document.getElementById('ui').style.display = 'none';
+        document.getElementById('ban').style.display = 'block';
+    } else {
+        document.getElementById('ui').style.display = 'block';
+        document.getElementById('ban').style.display = 'none';
+        document.getElementById('m_val').innerHTML = n;
+        document.getElementById('pv_val').innerHTML = p;
+        document.getElementById('ub_btn').innerHTML = "УЛУЧШИТЬ (" + (p * 50) + ")";
+    }
+    localStorage.setItem('n', n);
+    localStorage.setItem('p', p);
+    localStorage.setItem('b', b);
+}
+
+// Привязка событий (Event Listeners) - САМЫЙ НАДЕЖНЫЙ СПОСОБ
+document.getElementById('target').onclick = function() {
+    n += p;
+    if (n > 5000000 && !isAdm) { b = true; }
+    render();
+};
+
+document.getElementById('ub_btn').onclick = function() {
+    var cost = p * 50;
+    if (n >= cost) { n -= cost; p++; render(); }
+};
+
+document.getElementById('ask_btn').onclick = function() {
+    var k = prompt("Ключ:");
+    if (k === "Admin67") {
+        isAdm = true;
+        document.getElementById('adp').style.display = 'block';
+    }
+};
+
+// Функции админки
+document.getElementById('adm_m').onclick = function() { n += 1000000; render(); };
+document.getElementById('adm_p').onclick = function() { p += 10; render(); };
+document.getElementById('adm_u').onclick = function() { b = false; isAdm = true; render(); };
+document.getElementById('adm_close').onclick = function() { document.getElementById('adp').style.display = 'none'; };
+
+// Запуск
+render();
+</script>
+
+</body>
+</html>
